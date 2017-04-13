@@ -2,11 +2,15 @@
 
 ### 准备工具
 
-- vagrant
-- virtualbox
-- git
+- [vagrant](https://www.vagrantup.com/)
+- [virtualbox](https://www.virtualbox.org/)
+- [git](https://git-scm.com/downloads)
+- [Zeal离线文档](https://zealdocs.org/)
+- [vagrantbox 下载](http://www.vagrantbox.es/)
 
->NOTE: 本实例中使用vagrantbox为CentOS 6.5 x86_64.
+>NOTE: 本实例中使用vagrantbox为CentOS 6.5 x86_64, 适用于6.X
+
+---
 
 ### 如何使用
 
@@ -22,8 +26,9 @@
 
 `$ ansible test -m ping`
 
-4. 在本机部署web环境(nginx + php)
+4. 在本机部署个web环境(nginx + php)
 
 `$ ansible-playbook site.yml -s`
 
-^_^ 暂时先来这么多！
+---
+
