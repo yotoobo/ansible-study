@@ -1,0 +1,10 @@
+[test]
+localhost
+
+[test-node]
+localhost
+10.0.10.3
+10.0.10.4
+
+[test:vars]
+ansible_ssh_pass=vagrant

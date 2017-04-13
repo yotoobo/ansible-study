@@ -1,0 +1,6 @@
+---
+
+- include: install_nginx.yml
+- include: install_composer.yml
+- include: install_test_vhost.yml
+#- include: clone_code.yml

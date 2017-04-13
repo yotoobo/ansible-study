@@ -1,0 +1,10 @@
+---
+
+- name: get os version
+  setup: filter=ansible_distribution_major_version
+  register: res
+
+- name: install mysql packages
+  yum: name={{ item }}
+  with_items:
+    - mysql

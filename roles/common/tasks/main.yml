@@ -1,0 +1,49 @@
+---
+
+- name: get os type
+  setup: filter=ansible_distribution
+  register: res
+
+- name: only for Centos
+  fail: msg="Sorry,the system is not support"
+  when: res.ansible_facts.ansible_distribution != "CentOS"
+
+- name: update os
+  yum: name=* state=latest
+
+- name: install base packages
+  yum: name={{ item }} state=present
+  with_items:
+    - make
+    - gcc
+    - gcc-c++
+    - curl
+    - wget
+    - git
+    - unzip
+
+- name: config selinux file
+  lineinfile: dest=/etc/selinux/config regexp=^SELINUX= line=SELINUX=disabled
+
+- name: config iptables file
+  template: src=iptables.j2 dest=/etc/sysconfig/iptables
+  notify: restart iptables
+  tags: iptables
+
+- name: config sshd file
+  template: src=sshd_config.j2 dest=/etc/ssh/sshd_config backup=yes
+  notify: restart sshd
+  tags: sshd
+
+- name: config limit file
+  template: src=limits.conf.j2 dest=/etc/security/limits.conf
+
+- name: enable wheel group
+  lineinfile: "dest=/etc/sudoers state=present insertafter='^# %wheel  ' line='%wheel ALL=NOPASSWD: ALL'"
+
+- name: create new group
+  group: name={{ NEWUSER }}
+
+- name: create new user
+  user: name={{ NEWUSER }} password={{ NEWUSER_PASSWD }} groups={{ NEWUSER }},wheel append=yes
+  

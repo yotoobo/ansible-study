@@ -1,0 +1,10 @@
+---
+
+- name: restart iptables
+  service: name=iptables state=restarted
+
+- name: restart nginx
+  service: name=nginx state=restarted enabled=yes
+
+- name: restart php-fpm
+  service: name=php-fpm state=restarted enabled=yes

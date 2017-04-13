@@ -1,0 +1,72 @@
+---
+
+- name: get os version
+  setup: filter=ansible_distribution_major_version
+  register: res
+
+#- name: Use 163 Repo for default
+#  copy: src=CentOS{{ res.ansible_facts.ansible_distribution_major_version }}-Base-163.repo dest=/etc/yum.repos.d/CentOS-Base.repo backup=yes
+
+- name: install repo
+  yum: name={{ item }} state=present
+  with_items:
+    - https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ res.ansible_facts.ansible_distribution_major_version }}.noarch.rpm
+    - https://mirror.webtatic.com/yum/el{{ res.ansible_facts.ansible_distribution_major_version }}/latest.rpm
+
+- name: install nginx and php packages
+  yum: name={{ item }} state=present
+  with_items:
+    - nginx
+    - php{{ PHP_VERSION }}w
+    #- php{{ PHP_VERSION }}w-bcmath
+    - php{{ PHP_VERSION }}w-devel
+    - php{{ PHP_VERSION }}w-fpm
+    - php{{ PHP_VERSION }}w-gd
+    - php{{ PHP_VERSION }}w-mysql
+    - php{{ PHP_VERSION }}w-mcrypt
+    - php{{ PHP_VERSION }}w-mbstring
+    - php{{ PHP_VERSION }}w-opcache
+    - php{{ PHP_VERSION }}w-pear
+    - php{{ PHP_VERSION }}w-pecl-redis
+    #- php{{ PHP_VERSION }}w-pecl-memcache
+    #- php{{ PHP_VERSION }}w-soap
+    - php{{ PHP_VERSION }}w-xml
+
+- name: enable service
+  service: name={{ item }} state=started enabled=yes
+  with_items:
+    - nginx
+    - php-fpm
+
+- name: config nginx.conf
+  template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
+  notify:
+    - restart nginx
+
+- name: config php.ini
+  template: src=php.ini.j2 dest=/etc/php.ini
+  notify:
+    - restart php-fpm
+
+- name: config php-fpm.conf
+  lineinfile: dest=/etc/php-fpm.conf state=present regexp="^;log_level ="
+              line="log_level = warning"
+  notify:
+    - restart php-fpm
+
+- name: config www.conf
+  template: src=www.conf.j2 dest=/etc/php-fpm.d/www.conf
+  notify:
+    - restart php-fpm
+
+#- name: enable iptables for web
+#  iptables: chain=INPUT protocol=tcp table=filter to_ports={{ items }} jump=ACCEPT
+#  with_items:
+#    - {{ HTTP_PORT }}
+#    - {{ HTTPS_PORT }}
+
+# - name: enable iptables for web
+#   lineinfile: dest=/etc/sysconfig/iptables state=present insertbefore="^COMMIT"
+#               line="-A INPUT -p tcp -m tcp -m multiport --dports {{ HTTP_PORT }},{{ HTTPS_PORT }} -j  ACCEPT"
+#   notify:
+#     - restart iptables

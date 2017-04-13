@@ -1,0 +1,19 @@
+---
+
+- name: apply common to all nodes
+  hosts: test
+
+  roles:
+    - common
+
+- name: apply web to webserver
+  hosts: test
+
+  roles:
+    - web
+
+# - name: apply mysql to dbserver
+#   hosts: dbserver
+
+#   roles:
+#     - mysql
