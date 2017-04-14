@@ -36,9 +36,9 @@ listen.allowed_clients = 127.0.0.1
 ; Note: The user is mandatory. If the group is not set, the default user's group
 ;       will be used.
 ; RPM: apache Choosed to be able to access some dir as httpd
-user = {{ NEWUSER }}
+user = {{ PHP_USER }}
 ; RPM: Keep a group allowed to write in log dir.
-group = {{ NEWUSER }}
+group = {{ PHP_USER }}
 
 ; Choose how the process manager will control the number of child processes.
 ; Possible Values:

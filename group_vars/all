@@ -1,6 +1,8 @@
 # GLOBAL FOR ALL
 #
 # NEWUSER_PASSWD value: ansible
+#
+ENABLE_163_repo: true
 SSHD_PORT: 22
 NOFILE_NUM: 65535
 NEWUSER: wangzhiliang

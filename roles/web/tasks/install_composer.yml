@@ -1,7 +1,7 @@
 ---
 
-- name: Install Composer
+- name: install composer
   copy: src=file/composer dest=/usr/local/bin/composer mode=755
 
-- name: Use China mirror for composer
+- name: set composer mirror
   shell: '[ -d ~/.composer ] || /usr/local/bin/composer config -g repo.packagist composer https://packagist.phpcomposer.com'

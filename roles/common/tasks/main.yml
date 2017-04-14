@@ -1,12 +1,16 @@
 ---
 
-- name: get os type
-  setup: filter=ansible_distribution
+- name: get remote info
+  setup:
   register: res
 
 - name: only for Centos
   fail: msg="Sorry,the system is not support"
   when: res.ansible_facts.ansible_distribution != "CentOS"
+
+- name: Use 163 Repo
+  copy: src=files/CentOS{{ res.ansible_facts.ansible_distribution_major_version }}-Base-163.repo dest=/etc/yum.repos.d/CentOS-Base.repo backup=yes
+  when: ENABLE_163_repo
 
 - name: update os
   yum: name=* state=latest

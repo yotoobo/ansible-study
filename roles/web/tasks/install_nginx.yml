@@ -4,9 +4,6 @@
   setup: filter=ansible_distribution_major_version
   register: res
 
-#- name: Use 163 Repo for default
-#  copy: src=CentOS{{ res.ansible_facts.ansible_distribution_major_version }}-Base-163.repo dest=/etc/yum.repos.d/CentOS-Base.repo backup=yes
-
 - name: install repo
   yum: name={{ item }} state=present
   with_items:
@@ -65,8 +62,8 @@
 #    - {{ HTTP_PORT }}
 #    - {{ HTTPS_PORT }}
 
-# - name: enable iptables for web
-#   lineinfile: dest=/etc/sysconfig/iptables state=present insertbefore="^COMMIT"
-#               line="-A INPUT -p tcp -m tcp -m multiport --dports {{ HTTP_PORT }},{{ HTTPS_PORT }} -j  ACCEPT"
-#   notify:
-#     - restart iptables
+- name: enable iptables for web
+  lineinfile: dest=/etc/sysconfig/iptables state=present insertbefore="^COMMIT"
+              line="-A INPUT -p tcp -m tcp -m multiport --dports {{ HTTP_PORT }},{{ HTTPS_PORT }} -j  ACCEPT"
+  notify:
+    - restart iptables
