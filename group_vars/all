@@ -1,9 +1,29 @@
-# GLOBAL FOR ALL
-#
+# must set them for common role
 # NEWUSER_PASSWD value: ansible
-#
+# {
 ENABLE_163_repo: true
 SSHD_PORT: 22
 NOFILE_NUM: 65535
 NEWUSER: wangzhiliang
 NEWUSER_PASSWD: $1$pXG3qHeZ$98wDw1aPtSeDnL8pQQv1g0
+# }
+
+# must set them for web role
+# {
+HTTP_PORT: 80
+HTTPS_PORT: 443
+PHP_VERSION: 56
+PHP_USER: wangzhiliang
+PHP_TIMEOUT: 600
+PHP_MAX_CHILDREN: 50
+# }
+
+# must set them for mysql role
+# {
+MYSQL_RELEASE: 5.7
+MYSQL_VERSION: 5.7.17-1
+MYSQL_PORT: 3306
+MYSQL_USER: wangzhiliang
+MYSQL_USER_PASS: hello
+MYSQL_DBNAME: hello
+# }
