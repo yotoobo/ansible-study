@@ -1,0 +1,57 @@
+---
+### install nginx and php from source
+
+- name: get nginx package
+  get_url:
+    url: http://nginx.org/download/nginx-1.12.0.tar.gz
+    dest: /usr/local/src/
+    force: no
+
+- name: get php package
+  get_url:
+    url: http://mirrors.sohu.com/php/php-5.3.29.tar.gz
+    dest: /usr/local/src/
+    force: no
+
+- name: install nginx source
+  script: script/nginx.sh creates=/usr/local/nginx/conf/nginx.conf
+
+- name: config nginx.conf
+  template: src=nginx2.conf.j2 dest=/usr/local/nginx/conf/nginx.conf
+  notify:
+    - restart nginx
+
+- name: copy nginx service
+  copy: src=script/nginx dest=/etc/init.d/nginx mode=755
+
+- name: enable nginx service
+  service: name=nginx state=started enabled=yes
+
+
+- name: get os version
+  setup: filter=ansible_distribution_major_version
+  register: res
+
+- name: remove mysql package if exist
+  shell: yum -y remove mysql-libs mysql-devel
+
+- name: install mysql-libs and mysql-devel package
+  yum: name={{ item }} state=present
+  with_items:
+    - http://mirrors.sohu.com/mysql/MySQL-{{ MYSQL_RELEASE }}/mysql-community-common-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
+    - http://mirrors.sohu.com/mysql/MySQL-{{ MYSQL_RELEASE }}/mysql-community-libs-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
+    - http://mirrors.sohu.com/mysql/MySQL-{{ MYSQL_RELEASE }}/mysql-community-devel-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
+
+- name: install php source
+  script: script/php.sh creates=/usr/local/php/etc/php.ini
+
+- name: copy php.ini
+  template: src=php.ini.j2 dest=/usr/local/php/etc/php.ini
+  notify: restart php-fpm
+
+- name: copy php-fpm.conf
+  template: src=php-fpm.conf.j2 dest=/usr/local/php/etc/php-fpm.conf
+  notify: restart php-fpm
+  
+- name: enable php service
+  service: name=php-fpm state=restarted enabled=yes
