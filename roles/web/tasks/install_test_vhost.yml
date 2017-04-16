@@ -1,9 +1,0 @@
----
-
-- name: config nginx vhost
-  template: src=test_vhost.conf.j2 dest=/etc/nginx/conf.d/vhost.conf
-  notify:
-    - restart nginx
-
-- name: config nginx vhost test file
-  copy: src=templates/info.php dest=/usr/share/nginx/html/info.php

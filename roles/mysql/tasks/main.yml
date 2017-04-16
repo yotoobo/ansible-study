@@ -4,20 +4,31 @@
   setup: filter=ansible_distribution_major_version
   register: res
 
-- name: install package
-  yum: name=MySQL-python state=present
+# - name: install MySQL-python package
+#   yum: name=MySQL-python state=present
 
-- name: get mysql packages
-  get_url:
-    url: http://mirrors.sohu.com/mysql/MySQL-{{ MYSQL_RELEASE }}/{{ item }}
-    dest: /usr/local/src/
-    force: no
+- name: install mysql packages
+  yum: name=http://mirrors.sohu.com/mysql/MySQL-{{ MYSQL_RELEASE }}/{{ item }} state=present
   with_items:
     - mysql-community-client-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
     - mysql-community-common-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
     - mysql-community-libs-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
     - mysql-community-libs-compat-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
     - mysql-community-server-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
+    - mysql-community-devel-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
+
+# - name: get mysql packages
+#   get_url:
+#     url: http://mirrors.sohu.com/mysql/MySQL-{{ MYSQL_RELEASE }}/{{ item }}
+#     dest: /usr/local/src/
+#     force: no
+#   with_items:
+#     - mysql-community-client-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
+#     - mysql-community-common-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
+#     - mysql-community-libs-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
+#     - mysql-community-libs-compat-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
+#     - mysql-community-server-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
+#     - mysql-community-devel-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
 
 - name: install mysql packages
   shell: yum -y localinstall mysql-community-* chdir=/usr/local/src
@@ -27,15 +38,15 @@
   notify:
     - restart mysqld
 
-- name: init mysql(no password)
+- name: init mysql(no root password)
   shell: mysqld --initialize-insecure
   ignore_errors: True
 
 - name: enable mysqld service
   service: name=mysqld state=started enabled=yes
 
-- name: add mysql user
-  mysql_user: name={{ MYSQL_USER }} password={{ MYSQL_USER_PASS }} priv={{ MYSQL_DBNAME }}.*:ALL state=present
+# - name: add mysql user
+#   mysql_user: name={{ MYSQL_USER }} password={{ MYSQL_USER_PASS }} priv={{ MYSQL_DBNAME }}.*:ALL state=present
 
-- name: add mysql database
-  mysql_db: name={{ MYSQL_DBNAME }}
+# - name: add mysql database
+#   mysql_db: name={{ MYSQL_DBNAME }}
