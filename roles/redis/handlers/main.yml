@@ -1,4 +1,4 @@
 ---
 
 - name: restart redis
-  service: name=redis state=restarted
+  service: name=redis-{{ REDIS_PORT }} state=restarted

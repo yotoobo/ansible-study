@@ -30,6 +30,7 @@ MYSQL_DBNAME: hello
 
 # must set them for redis role
 # {
+REDIS_VERSION: 3.2.8
 REDIS_HOST: 127.0.0.1
 REDIS_PORT: 6379
 REDIS_PASS: hello^2017

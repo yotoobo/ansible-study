@@ -2,10 +2,12 @@
 
 VERSION=$1
 
-cd /usr/local/src
-tar xzf redis-$VERSION.tar.gz
+cd /usr/local/src/
+tar xvf redis-$VERSION.tar.gz
 cd redis-$VERSION
-make
+make -j2
 make install PREFIX=/usr/local
 
 cd ../ && rm -fr redis-$VERSION
+
+mkdir /etc/redis
