@@ -35,5 +35,5 @@
 ### Todo list
 
 - [x] 完成 mysql roles
-- [ ] 完成 redis roles
+- [x] 完成 redis roles
 - [ ] 完善 wiki
