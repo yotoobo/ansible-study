@@ -62,8 +62,8 @@
 #    - {{ HTTP_PORT }}
 #    - {{ HTTPS_PORT }}
 
-- name: enable iptables for web
-  lineinfile: dest=/etc/sysconfig/iptables state=present insertbefore="^COMMIT"
-              line="-A INPUT -p tcp -m tcp -m multiport --dports {{ HTTP_PORT }},{{ HTTPS_PORT }} -j  ACCEPT"
-  notify:
-    - restart iptables
+# - name: enable iptables for web
+#   lineinfile: dest=/etc/sysconfig/iptables state=present insertbefore="^COMMIT"
+#               line="-A INPUT -p tcp -m tcp -m multiport --dports {{ HTTP_PORT }},{{ HTTPS_PORT }} -j  ACCEPT"
+#   notify:
+#     - restart iptables
