@@ -1,10 +1,24 @@
+# host
+192.168.99.67 ansible_user=root ansible_ssh_pass=123456
+
+# test group
 [test]
 localhost
 
+# test-node group
 [test-node]
-localhost
 10.0.10.3
 10.0.10.4
 
-[test:vars]
+# same as test-node
+[test2-node]
+10.0.10.[3:4]
+
+# test-all group include test and test-node
+[test-all:children]
+test
+test-node
+
+# test-all group variable
+[test-all:vars]
 ansible_ssh_pass=vagrant
