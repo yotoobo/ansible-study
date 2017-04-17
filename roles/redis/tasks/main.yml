@@ -1,0 +1,18 @@
+---
+
+- name: get redis
+  get_url: url=http://download.redis.io/releases/redis-{{ REDIS_VERSION }}.tar.gz dest=/usr/local/src/redis-{{ REDIS_VERSION }}.tar.gz force=no
+
+- name: install redis
+  script: src=script/install.sh --some-arguments {{ REDIS_VERSION }} creates=/usr/local/bin/redis-cli 
+
+- name: copy redis service
+  template: src=redis-server.j2 dest=/etc/init.d/redis
+
+- name: copy redis.conf
+  template: src=redis.conf.j2 dest=/etc/redis/redis_{{ REDIS_PORT }}.conf
+  notify:
+    - restart redis
+
+- name: enable redis service
+  service: name=redis state=restarted enable=yes

@@ -27,3 +27,11 @@ MYSQL_USER: wangzhiliang
 MYSQL_USER_PASS: hello
 MYSQL_DBNAME: hello
 # }
+
+# must set them for redis role
+# {
+REDIS_HOST: 127.0.0.1
+REDIS_PORT: 6379
+REDIS_PASS: hello^2017
+REDIS_MEM: 1g
+# }
