@@ -86,9 +86,9 @@ ansible_ssh_pass=vagrant
 
 3. 使用ping模块测试test资产文件
 
-    3.1 对10.0.10.3进行ping：`$ ansible 10.0.10.3 -m ping`
-    3.2 对组test-all进行ping：`$ ansible test-all -m ping`
-    3.3 对所有主机进行ping：`$ ansible all -m ping`
+    1. 对10.0.10.3进行ping：`$ ansible 10.0.10.3 -m ping`
+    2. 对组test-all进行ping：`$ ansible test-all -m ping` 
+    3. 对所有主机进行ping：`$ ansible all -m ping` 
 
 
 
