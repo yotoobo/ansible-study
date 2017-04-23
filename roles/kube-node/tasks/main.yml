@@ -1,0 +1,23 @@
+---
+
+- name: get hostname
+  setup: filter=ansible_hostname
+  register: res
+
+- name: copy kubelet  
+  template: src=kubelet.j2 dest=/etc/kubernetes/kubelet
+
+- name: copy flanneld
+  copy: src=files/flanneld dest=/etc/sysconfig/flanneld
+
+- name: start service
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - kube-proxy
+    - kubelet
+    - flanneld
+    - docker
+
+- name: config kubectl
+  shell: "kubectl config set-cluster default-cluster --server=http://master:8080 && kubectl config set-context default-context --cluster=default-cluster --user=default-admin && kubectl config use-context default-context"
+

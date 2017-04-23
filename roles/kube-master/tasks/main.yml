@@ -1,0 +1,24 @@
+---
+
+- name: copy etcd.conf  
+  copy: src=files/etcd.conf dest=/etc/etcd/etcd.conf
+
+- name: copy apiserver
+  copy: src=files/apiserver dest=/etc/kubernetes/apiserver
+
+- name: start etcd service
+  service: name=etcd state=restarted enabled=yes
+
+- name: mkdir etcd db
+  shell: 'etcdctl mkdir /kube-centos/network && etcdctl mk /kube-centos/network/config "{ \"Network\": \"172.30.0.0/16\", \"SubnetLen\": 24, \"Backend\": { \"Type\": \"vxlan\" }}"'
+  ignore_errors: true
+
+- name: start service
+  service: name={{ item }} state=restarted enabled=yes
+  with_items:
+    - etcd
+    - kube-apiserver
+    - kube-controller-manager
+    - kube-scheduler
+    - flanneld
+

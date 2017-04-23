@@ -8,13 +8,13 @@
 - [Zeal离线文档](https://zealdocs.org/)
 - [vagrantbox 下载](http://www.vagrantbox.es/)
 
->NOTE: 本实例中使用vagrantbox为CentOS 6.5 x86_64, 所以适用于6.X
+>NOTE: 本实例中使用vagrantbox为CentOS 6.5 x86_64。
 
 ---
 
 ### 如何使用
 
->NOTE: 本学习环境使用ansible-2.2.0
+>NOTE: 本学习环境使用ansible-2.2.1，使用yum安装
 
 1. 克隆本项目
 
@@ -34,19 +34,12 @@
 
 ---
 
-### Todo list
-
-- [x] 完成 mysql roles
-- [x] 完成 redis roles
-
----
-
 ### inventory
 资产文件，是记录主机信息的配置文件。要操作的主机信息都保存在它那，有主机名、IP地址、用户名、密码、密钥等等。同时还可以自定义变量，格式为key=value, 多个变量由空格分开。
 
-1. 和inventory有关的全局配置：
+1. 和inventory有关的全局配置 ansible.cfg：
 
-``` ansible.cfg
+```
 
 # 定义资产文件地址，可以是文件，也可以是目录
 inventory = ./hosts/
@@ -90,5 +83,22 @@ ansible_ssh_pass=vagrant
     2. 对组test-all进行ping：`$ ansible test-all -m ping` 
     3. 对所有主机进行ping：`$ ansible all -m ping` 
 
+---
 
+### group_vars
+这个目录下配置的都是主机组的变量，每一个**文件名**必须是已存在的组名。本项目中，group_vars目录下有两个文件：all文件中定义的变量适用于所有主机，是全局范围的变量，而test文件中定义的则只适用于test主机组。
 
+以key: value 的形式定义变量：
+
+```
+KEY1: VALUE1
+KEY2: VALUE2
+```
+
+---
+
+### Todo
+
+- [x] 2017-04-23: 新增部署 kubernetes cluster
+- [x] 2017-04-17: 完成部署 redis
+- [x] 2017-04-14: 完成部署 mysql

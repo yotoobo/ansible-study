@@ -1,0 +1,38 @@
+---
+
+- name: get info
+  setup:
+  register: res
+
+- name: only for Centos
+  fail: msg="Sorry,the system is not support"
+  when: res.ansible_facts.ansible_distribution != "CentOS"
+
+- name: use 163 repo
+  get_url: url=http://mirrors.163.com/.help/CentOS{{ res.ansible_facts.ansible_distribution_major_version }}-Base-163.repo dest=/etc/yum.repos.d/CentOS-Base.repo force=yes
+
+- name: update system
+  yum: name=* state=latest
+
+- name: disable iptables
+  service: name=firewalld state=stopped enabled=no
+
+- name: copy /etc/hosts 
+  template: src=hosts.j2 dest=/etc/hosts
+
+- name: copy virt7-docker-common-release.repo
+  copy: src=files/virt7-docker-common-release.repo dest=/etc/yum.repos.d/
+
+- name: install Kubernetes, etcd and flannel
+  yum: name={{ item }} state=present enablerepo=virt7-docker-common-release
+  with_items:
+    - kubernetes
+    - etcd
+    - flannel
+
+- name: copy /etc/kubernetes/config
+  copy: src=files/config dest=/etc/kubernetes/config
+
+- name: copy flanneld
+  copy: src=files/flanneld dest=/etc/sysconfig/flanneld
+
