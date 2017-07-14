@@ -8,13 +8,13 @@
 - [Zeal离线文档](https://zealdocs.org/)
 - [vagrantbox 下载](http://www.vagrantbox.es/)
 
->NOTE: 本实例中使用vagrantbox为CentOS 6.5 x86_64。
+>NOTE: 本实例中使用vagrant box为CentOS 6.5 x86_64。
 
 ---
 
 ### 如何使用
 
->NOTE: 本学习环境使用ansible-2.2.1，使用yum安装
+>NOTE: 本学习环境使用ansible-2.3.1, 基于yum安装
 
 1. 克隆本项目
 
@@ -96,6 +96,9 @@ KEY2: VALUE2
 ```
 
 ---
+
+### 2017-07-14 更新
+- [x] 新增部署jenkins
 
 ### 2017-04-23 更新
 - [x] 新增部署 kubernetes cluster
