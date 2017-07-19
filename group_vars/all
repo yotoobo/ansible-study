@@ -36,3 +36,6 @@ REDIS_PORT: 6379
 REDIS_PASS: hello^2017
 REDIS_MEM: 1g
 # }
+
+# must set it for jenkins role
+JENKINS_VERSION: jenkins-2.60.1

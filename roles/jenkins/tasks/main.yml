@@ -21,7 +21,7 @@
   shell: rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
 
 - name: install jenkins package
-  yum: name=jenkins-2.46.2
+  yum: name={{ JENKINS_VERSION }}
 
 - name: start jenkins
   service: name=jenkins state=started
