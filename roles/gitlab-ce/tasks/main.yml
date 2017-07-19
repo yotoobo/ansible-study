@@ -1,0 +1,20 @@
+---
+
+- name: get remote info
+  setup:
+  register: res
+
+- name: only for Centos
+  fail: msg="Sorry,the system is not support"
+  when: res.ansible_facts.ansible_distribution != "CentOS"
+
+    
+- name: add repo
+  copy: src=files/gitlab-ce.repo dest=/etc/yum.repos.d/
+
+
+- name: install gitlab package
+  yum: name=gitlab-ce
+
+- name: run gitlab-ctl reconfigure
+  shell: gitlab-ctl reconfigure
