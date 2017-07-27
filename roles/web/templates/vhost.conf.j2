@@ -1,12 +1,13 @@
 server {
 	listen {{ HTTP_PORT }};
 	server_name {{ ansible_host }};
+        access_log /var/log/nginx/{{ ansible_host }}.log;
 
 	root /usr/share/nginx/html;
 	index index.php index.html index.htm;
 
 	location / { 
-		try_files $uri $uri/ /index.php?$query_string;
+	    try_files $uri $uri/ /index.php?$query_string;
 	}
 
 	location ~ \.php$ {

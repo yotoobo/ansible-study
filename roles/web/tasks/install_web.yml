@@ -15,7 +15,7 @@
   with_items:
     - nginx
     - php{{ PHP_VERSION }}w
-    #- php{{ PHP_VERSION }}w-bcmath
+    - php{{ PHP_VERSION }}w-bcmath
     - php{{ PHP_VERSION }}w-devel
     - php{{ PHP_VERSION }}w-fpm
     - php{{ PHP_VERSION }}w-gd
