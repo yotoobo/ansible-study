@@ -1,0 +1,114 @@
+---
+
+- name: get os version
+  setup: filter=ansible_distribution_major_version
+  register: res
+
+- name: install epel
+  yum: name=epel-release state=present
+
+- name: install package
+  yum: name={{ item }} state=present
+  with_items:
+    - make
+    - gcc
+    - gcc-c++
+    - libXpm-devel
+    - libxml2-devel
+    - libjpeg-turbo-devel
+    - libpng-devel
+    - freetype-devel
+    - bzip2
+    - bzip2-devel
+    - libcurl-devel
+    - t1lib-devel
+    - libmcrypt-devel
+    - openssl-devel
+    - zlib-devel
+    - libxslt-devel
+    - re2c
+    - libtool-ltdl-devel
+
+- name: create libXpm link
+  file:
+    src: /usr/lib64/libXpm.so
+    dest: /usr/lib/libXpm.so
+    state: link
+
+- name: create libmysqlclient link
+  file:
+    src: /usr/lib64/mysql/libmysqlclient.so
+    dest: /usr/lib/libmysqlclient.so
+    state: link
+
+
+- name: get php package
+  get_url:
+    url: http://mirrors.sohu.com/php/php-{{ PHP_VER }}.tar.gz
+    dest: /usr/local/src/
+    force: no
+
+- name: remove mysql package
+  yum: name={{ item }} 
+  with_items:
+    - mysql-libs
+    - mysql-devel
+
+- name: install mysql-libs and mysql-devel package
+  yum: name={{ item }} state=present
+  with_items:
+    - http://mirrors.sohu.com/mysql/MySQL-{{ MYSQL_RELEASE }}/mysql-community-common-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
+    - http://mirrors.sohu.com/mysql/MySQL-{{ MYSQL_RELEASE }}/mysql-community-libs-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
+    - http://mirrors.sohu.com/mysql/MySQL-{{ MYSQL_RELEASE }}/mysql-community-devel-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
+
+
+- name: unarchive package
+  unarchive:
+    src: /usr/local/src/php-{{ PHP_VER }}.tar.gz
+    dest: /usr/local/src/
+
+- name: add php group
+  group: name=work
+
+- name: add php user
+  user:
+    name: work
+    group: work
+    createhome: no
+
+- name: install php
+  shell: ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --enable-fpm --enable-bcmath --enable-sockets --enable-shmop --enable-zip --enable-soap --enable-pcntl --enable-mbstring --with-gd --with-zlib-dir --with-jpeg-dir --with-png-dir --enable-gd-native-ttf --with-freetype-dir --with-xpm-dir --with-bz2 --with-xmlrpc --with-xsl --with-zlib --with-mhash --with-mcrypt --with-mysql --with-curl --with-t1lib --with-gettext --with-openssl && make && make install chdir=/usr/local/src/php-{{ PHP_VER }}
+
+- name: create php link
+  file:
+    src: /usr/local/php/bin/{{ item }}
+    dest: /usr/bin/{{ item }}
+    state: link
+    mode: 0755
+  with_items:
+    - php
+    - phpize
+    - pecl
+    - php-config
+
+- name: copy init
+  copy: src=script/php-fpm dest=/etc/init.d/php-fpm mode=0755
+
+- name: create /var/log/php-fpm
+  file:
+    path: /var/log/php-fpm
+    state: directory
+    owner: work
+    group: work
+    mode: 0755
+
+- name: copy php.ini
+  template: src=php.ini.j2 dest=/usr/local/php/etc/php.ini
+  notify: restart php-fpm
+
+- name: copy php-fpm.conf
+  template: src=php-fpm.conf.j2 dest=/usr/local/php/etc/php-fpm.conf
+  notify: restart php-fpm
+  
+- name: enable php service
+  service: name=php-fpm state=restarted enabled=yes
