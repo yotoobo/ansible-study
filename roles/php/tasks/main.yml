@@ -35,13 +35,6 @@
     dest: /usr/lib/libXpm.so
     state: link
 
-- name: create libmysqlclient link
-  file:
-    src: /usr/lib64/mysql/libmysqlclient.so
-    dest: /usr/lib/libmysqlclient.so
-    state: link
-
-
 - name: get php package
   get_url:
     url: http://mirrors.sohu.com/php/php-{{ PHP_VER }}.tar.gz
@@ -49,7 +42,7 @@
     force: no
 
 - name: remove mysql package
-  yum: name={{ item }} 
+  yum: name={{ item }} state=removed
   with_items:
     - mysql-libs
     - mysql-devel
@@ -61,6 +54,11 @@
     - http://mirrors.sohu.com/mysql/MySQL-{{ MYSQL_RELEASE }}/mysql-community-libs-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
     - http://mirrors.sohu.com/mysql/MySQL-{{ MYSQL_RELEASE }}/mysql-community-devel-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
 
+- name: create libmysqlclient link
+  file:
+    src: /usr/lib64/mysql/libmysqlclient.so
+    dest: /usr/lib/libmysqlclient.so
+    state: link
 
 - name: unarchive package
   unarchive:
@@ -74,7 +72,6 @@
   user:
     name: work
     group: work
-    createhome: no
 
 - name: install php
   shell: ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --enable-fpm --enable-bcmath --enable-sockets --enable-shmop --enable-zip --enable-soap --enable-pcntl --enable-mbstring --with-gd --with-zlib-dir --with-jpeg-dir --with-png-dir --enable-gd-native-ttf --with-freetype-dir --with-xpm-dir --with-bz2 --with-xmlrpc --with-xsl --with-zlib --with-mhash --with-mcrypt --with-mysql --with-curl --with-t1lib --with-gettext --with-openssl && make && make install chdir=/usr/local/src/php-{{ PHP_VER }}
