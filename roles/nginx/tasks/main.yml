@@ -60,8 +60,8 @@
   file:
     path: /var/log/nginx
     state: directory
-    owner: nginx
-    group: nginx
+    owner: root
+    group: root
     mode: 0644
 
 - name: create conf.d
@@ -70,17 +70,23 @@
     state: directory
     mode: 0644
 
-- name: config nginx.conf
+- name: copy nginx.conf
   template: src=nginx.conf.j2 dest=/usr/local/nginx/conf/nginx.conf
   notify:
     - restart nginx
 
-- name: config vhost.conf
+- name: copy vhost.conf
   template: src=vhost.conf.j2 dest=/usr/local/nginx/conf/conf.d/vhost.conf
   notify:
     - restart nginx
 
-- name: copy nginx service
+- name: copy index.html
+  template: src=index.html.j2 dest=/usr/local/nginx/html/index.html
+
+- name: copy phpinfo.php
+  template: src=phpinfo.php.j2 dest=/usr/local/nginx/html/phpinfo.php
+
+- name: copy nginx init script
   copy: src=script/nginx dest=/etc/init.d/nginx mode=755
 
 - name: enable nginx service

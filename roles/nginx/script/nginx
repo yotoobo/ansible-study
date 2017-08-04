@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # nginx - this script starts and stops the nginx daemon
 #
@@ -10,13 +10,13 @@
 # config:      /etc/sysconfig/nginx
 # pidfile:     /var/run/nginx.pid
 
-# Source function library.
+# source function library.
 . /etc/rc.d/init.d/functions
 
-# Source networking configuration.
+# source networking configuration.
 . /etc/sysconfig/network
 
-# Check that networking is up.
+# check that networking is up.
 [ "$NETWORKING" = "no" ] && exit 0
 
 nginx="/usr/local/nginx/sbin/nginx"
@@ -142,3 +142,4 @@ case "$1" in
         echo $"Usage: $0 {start|stop|reload|configtest|status|force-reload|upgrade|restart|reopen_logs}"
         exit 2
 esac
+
