@@ -81,7 +81,7 @@
     - restart nginx
 
 - name: copy nginx service
-  copy: src=scripts/nginx dest=/etc/init.d/nginx mode=755
+  copy: src=script/nginx dest=/etc/init.d/nginx mode=755
 
 - name: enable nginx service
   service: name=nginx state=started enabled=yes
