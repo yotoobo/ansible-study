@@ -1,0 +1,9 @@
+#!/bin/bash
+
+nginx_prog=$(netstat -plnt|grep ':80'|grep nginx|wc -l)
+
+if [ $nginx_prog -eq 1 ];then
+	exit 0
+else
+	exit 1
+fi

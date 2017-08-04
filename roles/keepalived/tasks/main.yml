@@ -1,0 +1,54 @@
+---
+
+- name: install package
+  yum: name={{ item }} state=present
+  with_items:
+    - openssl-devel
+    - popt-devel
+    - make
+    - gcc
+    - gcc-c++
+
+- name: get keepalived package
+  get_url:
+    url: http://keepalived.org/software/keepalived-{{ KEEPALIVED_VERSION }}.tar.gz
+    dest: /usr/local/src/
+    force: no
+
+- name: unarchive package
+  unarchive:
+    src: /usr/local/src/keepalived-{{ KEEPALIVED_VERSION }}.tar.gz
+    dest: /usr/local/src/
+
+- name: install keepalived
+  shell: ./configure && make && make install chdir=/usr/local/src/keepalived-{{ KEEPALIVED_VERSION }}
+
+- name: create /etc/keepalived
+  file:
+    path: /etc/keepalived
+    state: directory
+    owner: root
+    group: root
+    mode: 0644
+
+- name: create /etc/keepalived/script
+  file:
+    path: /etc/keepalived/script
+    state: directory
+    owner: root
+    group: root
+    mode: 0644
+
+- name: copy keepalived.conf
+  template: src=keepalived.conf.j2 dest=/etc/keepalived/keepalived.conf
+  notify:
+    - restart keepalived
+
+- name: copy chk_nginx.sh
+  template: src=chk_nginx.sh.j2 dest=/etc/keepalived/script/chk_nginx.sh mode=755
+  notify:
+    - restart keepalived
+
+- name: copy keepalived init script
+  copy: src=script/keepalived.rh.init dest=/etc/init.d/keepalived mode=755
+

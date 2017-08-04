@@ -97,6 +97,13 @@ KEY2: VALUE2
 
 ---
 
+### 2017-08-05 更新
+- [x] 新增部署keepalived
+
+>variables:
+>1. 在hosts/test中定义： KEEPALIVED_STATE ; KEEPALIVED_PR
+>2. 在group_vars/all中定义： KEEPALIVED_VERSION ; KEEPALIVED_VIP 
+
 ### 2017-07-14 更新
 - [x] 新增部署jenkins
 
