@@ -30,6 +30,7 @@
   unarchive:
     src: /usr/local/src/{{ item }}
     dest: /usr/local/src/
+    copy: no
     
   with_items:
     - openssl-{{ OPENSSL_VERSION }}.tar.gz

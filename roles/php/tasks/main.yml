@@ -64,6 +64,7 @@
   unarchive:
     src: /usr/local/src/php-{{ PHP_VER }}.tar.gz
     dest: /usr/local/src/
+    copy: no
 
 - name: add php group
   group: name=work

@@ -13,7 +13,7 @@
   when: ENABLE_163_repo
 
 - name: use epel repo
-  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ res.ansible_facts.ansible_distribution_major_version }}.noarch.rpm state=present
+  yum: name=epel-release state=present
 
 - name: update os
   yum: name=* state=latest
