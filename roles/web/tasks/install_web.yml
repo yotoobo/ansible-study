@@ -4,11 +4,16 @@
   setup: filter=ansible_distribution_major_version
   register: res
 
-- name: install repo
-  yum: name={{ item }} state=present
-  with_items:
-    - https://dl.fedoraproject.org/pub/epel/epel-release-latest-{{ res.ansible_facts.ansible_distribution_major_version }}.noarch.rpm
-    - https://mirror.webtatic.com/yum/el{{ res.ansible_facts.ansible_distribution_major_version }}/latest.rpm
+- name: install epel
+  yum: name=epel-release state=present
+
+- name: install webtatic on 6
+  yum: name=https://mirror.webtatic.com/yum/el6/latest.rpm
+  when: res.ansible_facts.ansible_distribution_major_version = 6
+
+- name: install webtatic on 7
+  yum: name=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
+  when: res.ansible_facts.ansible_distribution_major_version = 7
 
 - name: install nginx and php packages
   yum: name={{ item }} state=present
