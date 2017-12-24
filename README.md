@@ -1,20 +1,20 @@
-# ansible-study
+# Ansible study
 
 ### 准备工具
 
-- [vagrant](https://www.vagrantup.com/)
-- [virtualbox](https://www.virtualbox.org/)
-- [git](https://git-scm.com/downloads)
-- [Zeal离线文档](https://zealdocs.org/)
-- [vagrant box下载](http://www.vagrantbox.es/)
+- [Vagrant](https://www.vagrantup.com/)
+- [Virtualbox](https://www.virtualbox.org/)
+- [Git](https://git-scm.com/downloads)
+- [Zeal](https://zealdocs.org/)
+- [Vagrant box下载](http://www.vagrantbox.es/)
 
->NOTE: 使用vagrant box为CentOS 6.5 x86_64。
+>NOTE: 使用Vagrant box: CentOS 7.2 x86_64
 
 ---
 
 ### 如何使用
 
->NOTE: 本学习环境使用ansible的版本为2.3.1, 使用yum安装
+>NOTE: 本学习环境ansible版本已升级至: 2.4.2
 
 1. 克隆本项目
 
@@ -37,13 +37,13 @@ ansible test -m ping
 
 4. 在本机部署个web环境(nginx + php)
 
-`$ ansible-playbook site.yml -s`
+`$ ansible-playbook site.yml`
 
 >Note: site.yml中已经预定义好是安装nginx+php环境
 
 ---
 
-### inventory
+### Inventory
 资产文件，是记录主机信息的配置文件。要操作的主机信息都保存在它那，有主机名、IP地址、用户名、密码、密钥等等。同时还可以自定义变量，格式为key=value, 多个变量由空格分开。
 
 1. 和inventory有关的全局配置 ansible.cfg：
@@ -105,6 +105,9 @@ KEY2: VALUE2
 ```
 
 ---
+
+### 2017-12-24 更新
+- [x] ansible更新至2.4.2;调整了不建议使用的参数;更新了些软件版本
 
 ### 2017-08-05 更新
 - [x] 新增部署keepalived

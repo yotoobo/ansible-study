@@ -4,16 +4,22 @@
   setup: filter=ansible_distribution_major_version
   register: res
 
-- name: install epel
-  yum: name=epel-release state=present
+- name: create group
+  group: name={{ PHP_USER }}
+
+- name: create user
+  user: name={{ PHP_USER }}
 
 - name: install webtatic on 6
   yum: name=https://mirror.webtatic.com/yum/el6/latest.rpm
-  when: res.ansible_facts.ansible_distribution_major_version = 6
+  when: res.ansible_facts.ansible_distribution_major_version == "6"
 
 - name: install webtatic on 7
   yum: name=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm
-  when: res.ansible_facts.ansible_distribution_major_version = 7
+  when: res.ansible_facts.ansible_distribution_major_version == "7"
+
+- name: install epel
+  yum: name=epel-release state=present
 
 - name: install nginx and php packages
   yum: name={{ item }} state=present
@@ -30,22 +36,16 @@
     - php{{ PHP_VERSION }}w-opcache
     - php{{ PHP_VERSION }}w-pear
     - php{{ PHP_VERSION }}w-pecl-redis
+    - php{{ PHP_VERSION }}w-xml
     #- php{{ PHP_VERSION }}w-pecl-memcache
     #- php{{ PHP_VERSION }}w-soap
-    - php{{ PHP_VERSION }}w-xml
 
-- name: enable service
-  service: name={{ item }} state=started enabled=yes
-  with_items:
-    - nginx
-    - php-fpm
-
-- name: config nginx.conf
+- name: copy nginx.conf
   template: src=nginx.conf.j2 dest=/etc/nginx/nginx.conf
   notify:
     - restart nginx
 
-- name: config php.ini
+- name: copy php.ini
   template: src=php.ini.j2 dest=/etc/php.ini
   notify:
     - restart php-fpm
@@ -56,10 +56,16 @@
   notify:
     - restart php-fpm
 
-- name: config www.conf
+- name: copy www.conf
   template: src=www.conf.j2 dest=/etc/php-fpm.d/www.conf
   notify:
     - restart php-fpm
+
+- name: enable service
+  service: name={{ item }} state=started enabled=yes
+  with_items:
+    - nginx
+    - php-fpm
 
 #- name: enable iptables for web
 #  iptables: chain=INPUT protocol=tcp table=filter to_ports={{ items }} jump=ACCEPT

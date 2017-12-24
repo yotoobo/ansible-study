@@ -1,5 +1,5 @@
 ---
-### the composer must after install_nginx
+### the composer must be after install_nginx
 
-- include: install_web.yml
-- include: install_composer.yml
+- import_tasks: install_web.yml
+- import_tasks: install_composer.yml

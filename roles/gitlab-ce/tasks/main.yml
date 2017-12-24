@@ -14,7 +14,7 @@
 
 
 - name: install gitlab package
-  yum: name=gitlab-ce
+  yum: name=gitlab-ce state=present
 
 - name: run gitlab-ctl reconfigure
   shell: gitlab-ctl reconfigure

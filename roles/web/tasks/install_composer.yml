@@ -1,7 +1,13 @@
 ---
 
-- name: install composer
-  copy: src=file/composer dest=/usr/local/bin/composer mode=755
+- name: download install script
+  shell: php -r "copy('https://install.phpcomposer.com/installer', 'composer-setup.php');" chdir=$HOME
+
+- name: run install script
+  shell: php composer-setup.php chdir=$HOME
+
+- name: copy to PATH
+  shell: cp $HOME/composer.phar /usr/local/bin/composer
 
 - name: set composer mirror
-  shell: '[ -d ~/.composer ] || /usr/local/bin/composer config -g repo.packagist composer https://packagist.phpcomposer.com'
+  shell: /usr/local/bin/composer config -g repo.packagist composer https://packagist.phpcomposer.com

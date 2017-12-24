@@ -1,5 +1,5 @@
 # for roles/common
-# NEWUSER_PASSWD value: ansible
+# new user passwd: ansible
 ENABLE_163_repo: true
 SSHD_PORT: 22
 NOFILE_NUM: 65535
@@ -29,16 +29,13 @@ REDIS_PORT: 6379
 REDIS_PASS: hello^2017
 REDIS_MEM: 1g
 
-# for roles/jenkins
-JENKINS_VERSION: jenkins-2.60.2
-
 # for roles/nginx
 OPENSSL_VERSION: 1.0.2l
 PCRE_VERSION: 8.41
-NGINX_VERSION: 1.12.1
+NGINX_VERSION: 1.12.2
 
 # for roles/php
-PHP_VER: 5.3.29
+PHP_VER: 5.6.32
 
 # for roles/keepalived
 KEEPALIVED_VERSION: 1.3.5

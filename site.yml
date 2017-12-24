@@ -2,18 +2,20 @@
 
 - name: apply common to all nodes
   hosts: test
+  become: True
 
   roles:
     - common
 
 - name: apply web to webserver
-  hosts: test
+  hosts: localhost
+  become: True
 
   roles:
     - web
 
 # - name: apply mysql to dbserver
 #   hosts: dbserver
-
+#
 #   roles:
 #     - mysql

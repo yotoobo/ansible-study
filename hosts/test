@@ -1,5 +1,5 @@
 # host
-192.168.99.67 ansible_user=root ansible_ssh_pass=123456
+10.0.10.5 ansible_user=vagrant ansible_ssh_pass=vagrant
 
 # test group
 [test]
