@@ -244,7 +244,7 @@ dbfilename dump_{{ REDIS_PORT }}.rdb
 # The Append Only File will also be created inside this directory.
 #
 # Note that you must specify a directory here, not a file name.
-dir ./
+dir /
 
 ################################# REPLICATION #################################
 
@@ -510,7 +510,7 @@ requirepass {{ REDIS_PASS }}
 # Once the limit is reached Redis will close all the new connections sending
 # an error 'max number of clients reached'.
 #
-# maxclients 10000
+maxclients 10000
 
 # Don't use more memory than the specified amount of bytes.
 # When the memory limit is reached Redis will try to remove keys

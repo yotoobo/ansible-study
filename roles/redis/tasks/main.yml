@@ -1,13 +1,27 @@
 ---
 
-- name: get redis
+- name: get os version
+  setup: filter=ansible_distribution_major_version
+  register: res
+
+- name: download redis
   get_url: url=http://download.redis.io/releases/redis-{{ REDIS_VERSION }}.tar.gz dest=/usr/local/src/redis-{{ REDIS_VERSION }}.tar.gz force=no
 
-- name: install redis
-  script: script/install.sh {{ REDIS_VERSION }} creates=/usr/local/bin/redis-cli 
+- name: unarchive redis
+  unarchive:
+    src: /usr/local/src/redis-{{ REDIS_VERSION }}.tar.gz
+    dest: /usr/local/src/
 
-- name: copy redis service
+- name: install redis
+  shell: cd redis-{{ REDIS_VERSION }} && make && make install PREFIX=/usr/local && cd ../ && rm -fr redis-{{ REDIS_VERSION }} && mkdir /etc/redis chdir=/usr/local/src #creates=/usr/local/bin/redis-cli 
+
+- name: copy redis service on 6
   template: src=redis-server.j2 dest=/etc/init.d/redis-{{ REDIS_PORT }} mode=755
+  when: res.ansible_facts.ansible_distribution_major_version == "6"
+
+- name: copy redis service on 7
+  template: src=redis-server.j2 dest=/etc/systemd/system/redis-{{ REDIS_PORT }}.service mode=755
+  when: res.ansible_facts.ansible_distribution_major_version == "7"
 
 - name: copy redis.conf
   template: src=redis.conf.j2 dest=/etc/redis/redis_{{ REDIS_PORT }}.conf
