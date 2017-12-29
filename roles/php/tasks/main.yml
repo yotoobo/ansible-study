@@ -35,19 +35,19 @@
     dest: /usr/lib/libXpm.so
     state: link
 
-- name: get php package
-  get_url:
-    url: http://mirrors.sohu.com/php/php-{{ PHP_VER }}.tar.gz
-    dest: /usr/local/src/
-    force: no
+# - name: get php package
+#   get_url:
+#     url: http://mirrors.sohu.com/php/php-{{ PHP_VER }}.tar.gz
+#     dest: /usr/local/src/
+#     force: no
 
-- name: remove mysql package
+- name: remove mysql-libs mysql-devel
   yum: name={{ item }} state=removed
   with_items:
     - mysql-libs
     - mysql-devel
 
-- name: install mysql-libs and mysql-devel package
+- name: install mysql57-libs and mysql57-devel
   yum: name={{ item }} state=present
   with_items:
     - http://mirrors.sohu.com/mysql/MySQL-{{ MYSQL_RELEASE }}/mysql-community-common-{{ MYSQL_VERSION }}.el{{ res.ansible_facts.ansible_distribution_major_version }}.x86_64.rpm
@@ -60,9 +60,9 @@
     dest: /usr/lib/libmysqlclient.so
     state: link
 
-- name: unarchive package
+- name: unarchive php.tar.gz
   unarchive:
-    src: /usr/local/src/php-{{ PHP_VER }}.tar.gz
+    src: http://mirrors.sohu.com/php/php-{{ PHP_VER }}.tar.gz
     dest: /usr/local/src/
     copy: no
 
@@ -75,12 +75,12 @@
     group: work
 
 - name: install php
-  shell: ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --enable-fpm --enable-bcmath --enable-sockets --enable-shmop --enable-zip --enable-soap --enable-pcntl --enable-mbstring --with-gd --with-zlib-dir --with-jpeg-dir --with-png-dir --enable-gd-native-ttf --with-freetype-dir --with-xpm-dir --with-bz2 --with-xmlrpc --with-xsl --with-zlib --with-mhash --with-mcrypt --with-mysql --with-curl --with-t1lib --with-gettext --with-openssl && make && make install chdir=/usr/local/src/php-{{ PHP_VER }}
+  shell: ./configure --prefix=/usr/local/php --with-config-file-path=/usr/local/php/etc --enable-fpm --enable-bcmath --enable-sockets --enable-shmop --enable-zip --enable-soap --enable-pcntl --enable-mbstring --with-gd --with-zlib-dir --with-jpeg-dir --with-png-dir --enable-gd-native-ttf --with-freetype-dir --with-xpm-dir --with-bz2 --with-xmlrpc --with-xsl --with-zlib --with-mhash --with-mcrypt --with-mysql --with-curl --with-t1lib --with-gettext --with-openssl && make && make install chdir=/usr/local/src/php-{{ PHP_VER }} creates=/usr/local/php/bin/php
 
 - name: create php link
   file:
     src: /usr/local/php/bin/{{ item }}
-    dest: /usr/bin/{{ item }}
+    dest: /usr/local/bin/{{ item }}
     state: link
     mode: 0755
   with_items:
@@ -89,16 +89,16 @@
     - pecl
     - php-config
 
-- name: copy init
-  copy: src=script/php-fpm dest=/etc/init.d/php-fpm mode=0755
+- name: copy init on centos6
+  shell: cp /usr/local/src/php-5.6.32/sapi/fpm/init.d.php-fpm php-fpm && chmod 755 php-fpm chdir=/etc/init.d/
+  when: ansible_distribution_major_version == "6"
 
-- name: create /var/log/php-fpm
-  file:
-    path: /var/log/php-fpm
-    state: directory
-    owner: work
-    group: work
-    mode: 0755
+- name: copy init on centos7
+  copy: src=files/php-fpm.service dest=/etc/systemd/system/php-fpm.service mode=0755
+  when: ansible_distribution_major_version == "7"
+
+- name: systemctl daemon-reload
+  shell: systemctl daemon-reload
 
 - name: copy php.ini
   template: src=php.ini.j2 dest=/usr/local/php/etc/php.ini
