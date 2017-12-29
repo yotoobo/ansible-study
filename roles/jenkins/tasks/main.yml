@@ -8,20 +8,19 @@
   fail: msg="Sorry,the system is not support"
   when: res.ansible_facts.ansible_distribution != "CentOS"
 
-- name: install package
-  yum: name={{ item }}
-  with_items:
-    - wget
-    - java-1.8.0-openjdk
-    
-- name: download jenkins repo
-  shell: wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo creates=/etc/yum.repos.d/jenkins.repo
+- name: install openjdk
+  yum: name=java-1.8.0-openjdk state=present
 
-- name: import key
-  shell: rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+- name: add jenkins repo
+  yum_repository:
+    name: jenkins
+    description: jenkins-stable
+    baseurl: http://pkg.jenkins.io/redhat-stable
+    gpgkey: https://pkg.jenkins.io/redhat-stable/jenkins.io.key
+    gpgcheck: 1
 
 - name: install jenkins package
   yum: name=jenkins
 
 - name: start jenkins
-  service: name=jenkins state=started
+  service: name=jenkins state=started enabled=yes
