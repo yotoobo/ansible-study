@@ -21,6 +21,9 @@
 - name: install epel
   yum: name=epel-release state=present
 
+- name: remove mysql package
+  yum: name=mysql-* state=removed
+
 - name: install nginx and php packages
   yum: name={{ item }} state=present
   with_items:
