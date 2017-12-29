@@ -1,0 +1,18 @@
+---
+
+- name: install curl
+  yum: name=curl state=present
+
+- name: download install script
+  get_url:
+    url: https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh
+    dest: ~/
+  
+- name: install node
+  shell: bash install.sh && source ~/.bashrc && nvm install v{{ NODE_VERSION }}
+  args:
+    chdir: ~/
+    creates: ~/.nvm/nvm.sh
+
+- name: install nrm and pm2
+  shell: source ~/.bashrc && npm install -g nrm && nrm use taobao && npm install -g pm2
